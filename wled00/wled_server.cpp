@@ -599,13 +599,18 @@ void initServer()
   });
 #endif
 
+  // Página raíz: ir directamente a los controles (index.htm)
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     if (captivePortal(request)) return;
-    if (!showWelcomePage || request->hasArg(F("sliders"))) {
-      handleStaticContent(request, F("/index.htm"), 200, FPSTR(CONTENT_TYPE_HTML), PAGE_index, PAGE_index_length);
-    } else {
-      serveSettings(request);
-    }
+
+    handleStaticContent(
+      request,
+      F("/index.htm"),
+      200,
+      FPSTR(CONTENT_TYPE_HTML),
+      PAGE_index,
+      PAGE_index_length
+    );
   });
 
 #ifndef WLED_DISABLE_2D
