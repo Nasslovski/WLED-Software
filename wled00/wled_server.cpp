@@ -327,6 +327,22 @@ void initServer()
   DefaultHeaders::Instance().addHeader(F("Access-Control-Allow-Methods"), "*");
   DefaultHeaders::Instance().addHeader(F("Access-Control-Allow-Headers"), "*");
 
+    // --- FIX ANDROID / IOS CAPTIVE PORTAL ---
+  // Android comprueba estas rutas para ver si hay internet.
+  // Si respondemos 204/200, asume que todo está bien y NO abre el portal cautivo.
+  server.on(F("/generate_204"), HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(204);
+  });
+
+  server.on(F("/gen_204"), HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(204);
+  });
+
+  // Algunas variantes de comprobación (por si el path cambia un poco)
+  server.on(F("/hotspot-detect.html"), HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(200, FPSTR(CONTENT_TYPE_HTML), F("<html><body>OK</body></html>"));
+  });
+
 #ifdef WLED_ENABLE_WEBSOCKETS
   #ifndef WLED_DISABLE_2D 
   server.on(F("/liveview2D"), HTTP_GET, [](AsyncWebServerRequest *request) {
